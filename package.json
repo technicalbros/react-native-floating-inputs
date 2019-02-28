@@ -1,0 +1,25 @@
+{
+  "name": "@technicalbros/react-native-styles",
+  "version": "1.0.0",
+  "scripts": {
+    "watch": "tsc --watch"
+  },
+  "description": "JSS like styles for react native",
+  "main": "index.js",
+  "author": "Shridhar Sharma <shridharkaushik29@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/lodash": "^4.14.121",
+    "@types/react": "^16.8.5",
+    "@types/react-native": "^0.57.38",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "react-native-modal-datetime-picker": "6.*",
+    "@technicalbros/react-native-styles": "1.*",
+    "native-base": "2.*",
+    "react": "16.*",
+    "lodash": "4.*",
+    "react-native": "0.*"
+  }
+}
