@@ -1,10 +1,10 @@
 {
-  "name": "@technicalbros/react-native-styles",
+  "name": "@technicalbros/react-native-floating-inputs",
   "version": "1.0.0",
   "scripts": {
     "watch": "tsc --watch"
   },
-  "description": "JSS like styles for react native",
+  "description": "Material Design Floating Inputs for React Native",
   "main": "index.js",
   "author": "Shridhar Sharma <shridharkaushik29@gmail.com>",
   "license": "MIT",
