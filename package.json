@@ -12,14 +12,21 @@
     "@types/lodash": "^4.14.121",
     "@types/react": "^16.8.5",
     "@types/react-native": "^0.57.38",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "lodash": "^4.17.11",
+    "native-base": "2.*",
+    "react": "^16.8.3",
+    "react-native": "^0.58.6",
+    "react-extended-component": "^1.0.9"
+  },
+  "peerDependencies": {
+    "native-base": "2.*",
+    "lodash": "^4.17.11",
+    "react": "^16.8.3",
+    "react-native": "^0.58.6"
   },
   "dependencies": {
-    "react-native-modal-datetime-picker": "6.*",
-    "@technicalbros/react-native-styles": "1.*",
-    "native-base": "2.*",
-    "react": "16.*",
-    "lodash": "4.*",
-    "react-native": "0.*"
+    "react-native-modal-datetime-picker": "6.x.x",
+    "@technicalbros/react-native-styles": "1.x.x"
   }
 }

@@ -45,9 +45,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
 var react_native_1 = require("react-native");
-var react_native_styles_1 = require("@technicalbros/react-native-styles");
 var native_base_1 = require("native-base");
 var react_native_modal_datetime_picker_1 = __importDefault(require("react-native-modal-datetime-picker"));
+var react_extended_component_1 = require("react-extended-component");
+var _ = __importStar(require("lodash"));
+var withStyles_1 = __importDefault(require("@technicalbros/react-native-styles/withStyles"));
 // @ts-ignore
 var FloatingInput = /** @class */ (function (_super) {
     __extends(FloatingInput, _super);
@@ -57,16 +59,21 @@ var FloatingInput = /** @class */ (function (_super) {
             labelTop: new react_native_1.Animated.Value(20),
             labelFontSize: new react_native_1.Animated.Value(16),
             focused: false,
-            selected: _this.props.selected,
             value: _this.props.value
         };
-        if (_this.props.selected && _this.props.options) {
-            var option = _this.props.options.find(function (_a) {
-                var value = _a.value;
-                return value === _this.state.selected;
-            });
-            if (option)
-                _this.state.value = option.label;
+        if (_this.props.options) {
+            if (_this.props.multiple) {
+                _this.state.selected = _this.props.selected || [];
+            }
+            else if (_this.props.selected !== undefined) {
+                _this.state.selected = _this.props.selected;
+                var option = _this.props.options.find(function (_a) {
+                    var value = _a.value;
+                    return value === _this.state.selected;
+                });
+                if (option)
+                    _this.state.value = option.label;
+            }
         }
         if (_this.props.date && _this.props.type === "date") {
             _this.state.value = _this.props.date.toDateString();
@@ -102,31 +109,167 @@ var FloatingInput = /** @class */ (function (_super) {
         this.refreshLabel();
     };
     FloatingInput.prototype.componentDidUpdate = function (prevProps, prevState) {
-        var _this = this;
         if (prevProps.value !== this.props.value && this.props.value !== undefined) {
             this.setState({ value: this.props.value });
             this.refreshLabel();
         }
-        if (this.state.selected !== prevState.selected && this.props.options) {
-            this.setState({ value: this.props.options.find(function (_a) {
-                    var value = _a.value;
-                    return value === _this.state.selected;
-                }) });
+        if (this.props.selected !== undefined && !_.isEqual(this.props.selected, prevProps.selected)) {
+            if (this.props.multiple) {
+                this.setState({
+                    selected: this.props.selected.slice()
+                });
+            }
+            else {
+                this.setState({
+                    selected: this.props.selected
+                });
+            }
         }
         if (this.state.focused !== prevState.focused) {
             this.refreshLabel();
-        }
-        if (this.props.onChangeText && this.state.value !== prevState.value) {
-            this.props.onChangeText(this.state.value);
         }
         if (this.props.date !== undefined && this.props.date !== prevProps.date) {
             this.setState({ value: this.props.date.toDateString() });
         }
     };
+    FloatingInput.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, styles = _a.styles, options = _a.options, type = _a.type, icon = _a.icon, onFocus = _a.onFocus, selectionMode = _a.selectionMode, onDateSelect = _a.onDateSelect, onSubmitEditing = _a.onSubmitEditing, onChangeText = _a.onChangeText, onOptionSelect = _a.onOptionSelect, inputProps = _a.inputProps, numberOfLines = _a.numberOfLines, label = _a.label, placeholder = _a.placeholder, multiple = _a.multiple;
+        var _b = this.state, value = _b.value, focused = _b.focused;
+        var is_picker = type === "date" || !!options;
+        return <react_native_1.View style={styles.root}>
+            <react_native_1.View style={{
+            position: "relative",
+            minHeight: 50,
+            flexDirection: "column",
+            justifyContent: "flex-end"
+        }}>
+                {!!label &&
+            <react_native_1.Animated.Text style={__assign({}, styles.label, { fontSize: this.state.labelFontSize, top: this.state.labelTop })}>
+                        {label}
+                    </react_native_1.Animated.Text>}
+                {is_picker ?
+            <react_native_1.TouchableOpacity onPress={function () {
+                _this.handleFocus();
+            }}>
+                            <react_native_1.Text style={__assign({ paddingTop: 12, flexDirection: "column" }, styles.input, styles.button)}>{value}</react_native_1.Text>
+                        </react_native_1.TouchableOpacity>
+            :
+                <react_native_1.TextInput placeholder={placeholder} value={value} onSubmitEditing={onSubmitEditing} secureTextEntry={type === "password"} onChangeText={function (value) {
+                    _this.setState({ value: value });
+                    onChangeText && onChangeText(value);
+                }} onBlur={function () {
+                    _this.setState({ focused: false });
+                }} onFocus={function () {
+                    _this.setState({ focused: true });
+                    onFocus && onFocus();
+                }} style={styles.input} {...inputProps}/>}
+                {icon && <react_native_1.View style={{ position: "absolute", right: 12, top: 12 }}>
+                        {icon}
+                    </react_native_1.View>}
+                {type === "date" && <react_native_modal_datetime_picker_1.default confirmTextIOS={"Confirm"} isVisible={!!this.state.focused} date={this.state.date || new Date()} onConfirm={function (date) {
+            _this.setState({ date: date, value: date.toDateString(), focused: false });
+            onDateSelect && onDateSelect(date);
+        }} titleIOS={label} onCancel={function () { return _this.setState({ focused: false }); }} mode={"date"}/>}
+            </react_native_1.View>
+            <react_native_1.View style={styles.underline}/>
+            {!!options && (selectionMode === "Modal" || multiple) &&
+            <react_native_1.Modal animated animationType="slide" onShow={function () {
+                if (multiple) {
+                    _this.setState({ selected: _this.props.selected.slice() });
+                }
+                else {
+                    _this.setState({ selected: _this.props.selected });
+                }
+            }} visible={focused} onRequestClose={function () { return _this.unfocus(); }}>
+                    <native_base_1.Root>
+                        <native_base_1.Header style={styles.header}>
+                            <native_base_1.Body style={{ flexDirection: "row", justifyContent: "center" }}>
+                            <native_base_1.Title style={{ textAlign: "center", padding: 8 }}>
+                                {label}
+                            </native_base_1.Title>
+                            </native_base_1.Body>
+                        </native_base_1.Header>
+                        <react_native_1.SafeAreaView style={styles.safeAreaView}>
+                            <react_native_1.View style={{ flex: 1, backgroundColor: "white", padding: 8, paddingBottom: 20 }}>
+                                <react_native_1.ScrollView style={{ flex: 1 }}>
+                                    <native_base_1.List style={{ padding: 8 }}>
+                                        {options.map(function (option) {
+                return <native_base_1.ListItem key={option.value} selected={!multiple && option.value === _this.state.selected} onPress={function () {
+                    if (multiple) {
+                        react_extended_component_1.updateState(_this, function (state) {
+                            if (_this.isSelected(option)) {
+                                _.pull(state.selected, option.value);
+                            }
+                            else {
+                                state.selected.push(option.value);
+                            }
+                            return state;
+                        });
+                    }
+                    else {
+                        _this.setState({
+                            value: option.value ? option.label : null,
+                            focused: false
+                        });
+                        onOptionSelect && onOptionSelect(option);
+                    }
+                }}>
+                                                    <native_base_1.Left>
+                                                        <react_native_1.Text>{option.label}</react_native_1.Text>
+                                                    </native_base_1.Left>
+                                                    {multiple &&
+                    <native_base_1.Right>
+                                                            <native_base_1.CheckBox checked={_this.isSelected(option)} color="green"/>
+                                                        </native_base_1.Right>}
+                                                </native_base_1.ListItem>;
+            })}
+                                    </native_base_1.List>
+                                </react_native_1.ScrollView>
+                                {multiple &&
+                <react_native_1.View style={{ flexDirection: "row" }}>
+                                        <react_native_1.View style={{ padding: 8, flex: 1 }}>
+                                            <native_base_1.Button onPress={function () { return _this.unfocus(); }} danger full style={styles.cancelButton}>
+                                                <react_native_1.Text style={styles.cancelButtonText}>Cancel</react_native_1.Text>
+                                            </native_base_1.Button>
+                                        </react_native_1.View>
+                                        <react_native_1.View style={{ padding: 8, flex: 1 }}>
+                                            <native_base_1.Button style={styles.confirmButton} full onPress={function () {
+                    var options = _this.selectedOptions();
+                    onOptionSelect && onOptionSelect(options);
+                    _this.setState({ value: options.map(function (_a) {
+                            var label = _a.label;
+                            return label;
+                        }).join(", ") });
+                    _this.unfocus();
+                }}>
+                                                <react_native_1.Text style={styles.confirmButtonText}>Choose</react_native_1.Text>
+                                            </native_base_1.Button>
+                                        </react_native_1.View>
+                                    </react_native_1.View>}
+                            </react_native_1.View>
+                        </react_native_1.SafeAreaView>
+                    </native_base_1.Root>
+                </react_native_1.Modal>}
+        </react_native_1.View>;
+    };
+    FloatingInput.prototype.isSelected = function (option) {
+        return this.state.selected.indexOf(option.value) !== -1;
+    };
+    FloatingInput.prototype.unfocus = function () {
+        this.setState({ focused: false });
+    };
+    FloatingInput.prototype.selectedOptions = function () {
+        var _this = this;
+        return this.state.selected.map(function (val) { return _this.props.options.find(function (_a) {
+            var value = _a.value;
+            return value === val;
+        }); });
+    };
     FloatingInput.prototype.handleFocus = function () {
         var _this = this;
-        var _a = this.props, options = _a.options, onOptionSelect = _a.onOptionSelect, label = _a.label;
-        if (this.props.options) {
+        var _a = this.props, options = _a.options, selectionMode = _a.selectionMode, onOptionSelect = _a.onOptionSelect, multiple = _a.multiple, label = _a.label;
+        if (options && selectionMode === "ActionSheet" && !multiple) {
             native_base_1.ActionSheet.show({
                 options: options.map(function (_a) {
                     var label = _a.label;
@@ -148,45 +291,14 @@ var FloatingInput = /** @class */ (function (_super) {
         }
         this.setState({ focused: true });
     };
-    FloatingInput.prototype.render = function () {
-        var _this = this;
-        var _a = this.props, styles = _a.styles, options = _a.options, type = _a.type, onFocus = _a.onFocus, onDateSelect = _a.onDateSelect, inputProps = _a.inputProps, numberOfLines = _a.numberOfLines, label = _a.label, placeholder = _a.placeholder;
-        var value = this.state.value;
-        var is_picker = type === "date" || !!options;
-        return <react_native_1.View style={__assign({ flexDirection: "column" }, styles.root)}>
-            <react_native_1.View style={{
-            position: "relative",
-            minHeight: 50,
-            flexDirection: "column",
-            justifyContent: "flex-end"
-        }}>
-                {!!label &&
-            <react_native_1.Animated.Text style={__assign({}, styles.label, { fontSize: this.state.labelFontSize, top: this.state.labelTop })}>
-                        {label}
-                    </react_native_1.Animated.Text>}
-                {is_picker ?
-            <react_native_1.TouchableOpacity onPress={function () {
-                _this.handleFocus();
-            }}>
-                            <react_native_1.Text style={__assign({ paddingTop: 12, flexDirection: "column" }, styles.input, styles.button)}>{value}</react_native_1.Text>
-                        </react_native_1.TouchableOpacity>
-            :
-                <react_native_1.TextInput placeholder={placeholder} value={value} secureTextEntry={type === "password"} onChangeText={function (value) { return _this.setState({ value: value }); }} onBlur={function () {
-                    _this.setState({ focused: false });
-                }} onFocus={function () {
-                    _this.setState({ focused: true });
-                    onFocus && onFocus();
-                }} style={styles.input} {...inputProps}/>}
-                {type === "date" && <react_native_modal_datetime_picker_1.default confirmTextIOS={"Confirm"} isVisible={!!this.state.focused} date={this.state.date || new Date()} onConfirm={function (date) {
-            _this.setState({ date: date, value: date.toDateString(), focused: false });
-            onDateSelect && onDateSelect(date);
-        }} titleIOS={label} onCancel={function () { return _this.setState({ focused: false }); }} mode={"date"}/>}
-            </react_native_1.View>
-            <react_native_1.View style={styles.underline}/>
-        </react_native_1.View>;
+    FloatingInput.defaultProps = {
+        selectionMode: "ActionSheet"
     };
     FloatingInput = __decorate([
-        react_native_styles_1.withStyles({
+        withStyles_1.default({
+            root: {
+                flexDirection: "column"
+            },
             underline: {
                 borderTopWidth: 1,
                 borderColor: "gray"
@@ -201,6 +313,9 @@ var FloatingInput = /** @class */ (function (_super) {
             floatingLabel: {
                 top: 0,
                 fontSize: 12
+            },
+            safeAreaView: {
+                flex: 1,
             }
         }),
         __metadata("design:paramtypes", [Object])

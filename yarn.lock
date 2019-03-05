@@ -570,12 +570,9 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@technicalbros/react-native-styles@1.*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@technicalbros/react-native-styles/-/react-native-styles-1.0.0.tgz#79b1cd4ada3db4b1d9bb435f0680420e50c86d67"
-  dependencies:
-    lodash "4.*"
-    react "16.*"
+"@technicalbros/react-native-styles@1.x.x":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@technicalbros/react-native-styles/-/react-native-styles-1.0.6.tgz#fb7dc1412adbd931f89094f5da910fd235107f83"
 
 "@types/lodash@^4.14.121":
   version "4.14.121"
@@ -2117,7 +2114,7 @@ lodash.throttle@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
 
-lodash@4.*, lodash@4.17.11, lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.6.1:
+lodash@4.17.11, lodash@4.x, lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
@@ -2975,6 +2972,13 @@ react-devtools-core@^3.4.2:
     shell-quote "^1.6.1"
     ws "^3.3.1"
 
+react-extended-component@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-extended-component/-/react-extended-component-1.0.9.tgz#60b316aec2fb371fe7c8f9a491c82ff670006ef5"
+  dependencies:
+    lodash "4.x"
+    react "16.x"
+
 react-is@^16.8.1:
   version "16.8.3"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.3.tgz#4ad8b029c2a718fc0cfc746c8d4e1b7221e5387d"
@@ -3009,7 +3013,7 @@ react-native-keyboard-aware-scroll-view@0.8.0:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-modal-datetime-picker@6.*:
+react-native-modal-datetime-picker@6.x.x:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-6.0.0.tgz#8018994524122ad48fd6bc66f26f623c75a49fb3"
   dependencies:
@@ -3031,9 +3035,9 @@ react-native-vector-icons@6.1.0:
     prop-types "^15.6.2"
     yargs "^8.0.2"
 
-react-native@0.*:
-  version "0.58.5"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.58.5.tgz#672709bafd845e35ab4dd32b8ccccae32d54d552"
+react-native@^0.58.6:
+  version "0.58.6"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.58.6.tgz#a6d273cd2f51b0e3b141dad5f19622e0000497b3"
   dependencies:
     "@babel/runtime" "^7.0.0"
     absolute-path "^0.0.0"
@@ -3114,7 +3118,7 @@ react-tween-state@^0.1.5:
     raf "^3.1.0"
     tween-functions "^1.0.1"
 
-react@16.*:
+react@16.x, react@^16.8.3:
   version "16.8.3"
   resolved "https://registry.yarnpkg.com/react/-/react-16.8.3.tgz#c6f988a2ce895375de216edcfaedd6b9a76451d9"
   dependencies:
