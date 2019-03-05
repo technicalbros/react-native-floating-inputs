@@ -322,4 +322,4 @@ var FloatingInput = /** @class */ (function (_super) {
     ], FloatingInput);
     return FloatingInput;
 }(React.Component));
-exports.FloatingInput = FloatingInput;
+exports.default = FloatingInput;

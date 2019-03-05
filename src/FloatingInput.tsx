@@ -52,7 +52,7 @@ import withStyles from "@technicalbros/react-native-styles/withStyles";
         flex: 1,
     }
 })
-export class FloatingInput extends React.Component<{
+export default class FloatingInput extends React.Component<{
     inputProps?: TextInputProps,
     styles?: {
         input?: any,

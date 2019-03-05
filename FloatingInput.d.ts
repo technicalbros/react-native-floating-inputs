@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TextInputProps } from "react-native";
-export declare class FloatingInput extends React.Component<{
+export default class FloatingInput extends React.Component<{
     inputProps?: TextInputProps;
     styles?: {
         input?: any;
