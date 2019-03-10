@@ -286,10 +286,12 @@ var FloatingInput = /** @class */ (function (_super) {
                     _this.setState({ tmp_selected: _this.state.selected.slice() });
                 }
             }} visible={focused} onRequestClose={function () { return _this.unfocus(); }}>
-                    <native_base_1.Header style={styles.header}>
-                        <native_base_1.Title style={{ textAlign: "center", padding: 8 }}>
+                    <native_base_1.Header androidStatusBarColor={styles.header.backgroundColor} style={styles.header}>
+                        <native_base_1.Body>
+                        <native_base_1.Title>
                             {label}
                         </native_base_1.Title>
+                        </native_base_1.Body>
                         <native_base_1.Icon onPress={function () { return _this.unfocus(); }} style={__assign({}, styles.closeButton, { position: "absolute" })} name="x" type="Feather"/>
                     </native_base_1.Header>
                     <react_native_1.SafeAreaView style={styles.safeAreaView}>

@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import {ActionSheet, Button, CheckBox, Header, Icon, Left, List, ListItem, Right, Title} from "native-base";
+import {ActionSheet, Body, Button, CheckBox, Header, Icon, Left, List, ListItem, Right, Title} from "native-base";
 import DateTimePicker, {DateTimePickerProps} from "react-native-modal-datetime-picker";
 import {updateState} from "react-extended-component";
 import * as _ from "lodash";
@@ -359,10 +359,12 @@ export default class FloatingInput extends React.Component<{
                         this.setState({tmp_selected: [...this.state.selected]})
                     }
                 }} visible={focused} onRequestClose={() => this.unfocus()}>
-                    <Header style={styles.header}>
-                        <Title style={{textAlign: "center", padding: 8}}>
+                    <Header androidStatusBarColor={styles.header.backgroundColor} style={styles.header}>
+                        <Body>
+                        <Title>
                             {label}
                         </Title>
+                        </Body>
                         <Icon
                             onPress={() => this.unfocus()} style={{...styles.closeButton, position: "absolute"}}
                             name="x" type="Feather"
