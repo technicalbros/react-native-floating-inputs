@@ -1,6 +1,6 @@
 {
   "name": "@technicalbros/react-native-floating-inputs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "watch": "tsc --watch"
   },
@@ -12,21 +12,21 @@
     "@types/lodash": "^4.14.121",
     "@types/react": "^16.8.5",
     "@types/react-native": "^0.57.38",
-    "typescript": "^3.3.3333",
+    "lodash": "4.x",
+    "native-base": "2.x",
     "react": "16.x",
     "react-native": "0.x",
-    "lodash": "4.x",
-    "native-base": "2.x"
+    "typescript": "^3.3.3333"
   },
   "peerDependencies": {
-    "react": "16.x.x",
-    "react-native": "0.x.x",
     "lodash": "4.x.x",
-    "native-base": "2.x.x"
+    "native-base": "2.x.x",
+    "react": "16.x.x",
+    "react-native": "0.x.x"
   },
   "dependencies": {
-    "react-native-modal-datetime-picker": "6.x.x",
+    "@technicalbros/react-native-styles": "1.x.x",
     "react-extended-component": "1.x.x",
-    "@technicalbros/react-native-styles": "1.x.x"
+    "react-native-modal-datetime-picker": "6.x.x"
   }
 }
