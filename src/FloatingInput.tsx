@@ -1,12 +1,27 @@
 import * as React from "react";
-import {TextInput, View, Text, Animated, TextInputProps, TouchableOpacity} from "react-native";
-import {withStyles} from "@technicalbros/react-native-styles";
-import {ActionSheet} from "native-base";
-import DateTimePicker from "react-native-modal-datetime-picker";
-
+import {
+    Animated,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    TextInput,
+    TextInputProps,
+    TouchableOpacity,
+    View
+} from "react-native";
+import {ActionSheet, Button, CheckBox, Header, Icon, Left, List, ListItem, Right, Title} from "native-base";
+import DateTimePicker, {DateTimePickerProps} from "react-native-modal-datetime-picker";
+import {updateState} from "react-extended-component";
+import * as _ from "lodash";
+import withStyles from "@technicalbros/react-native-styles/withStyles";
+import material from "native-base/src/theme/variables/material";
 
 // @ts-ignore
 @withStyles({
+    root: {
+        flexDirection: "column"
+    },
     underline: {
         borderTopWidth: 1,
         borderColor: "gray"
@@ -15,48 +30,145 @@ import DateTimePicker from "react-native-modal-datetime-picker";
         height: 40,
         paddingLeft: 0
     },
+    header: {
+        backgroundColor: material.brandPrimary
+    },
+    closeButton: {
+        color: material.brandPrimaryContrast,
+        right: 10,
+        bottom: 8
+    },
     label: {
         position: "absolute",
     },
     floatingLabel: {
         top: 0,
         fontSize: 12
+    },
+    safeAreaView: {
+        flex: 1,
+    },
+    confirmButton: {
+        backgroundColor: material.brandSecondary,
+    },
+    confirmButtonText: {
+        color: material.brandSecondaryContrast
     }
 })
-export class FloatingInput extends React.Component {
-
-    // @ts-ignore
-    props: {
-        inputProps?: TextInputProps,
-        styles?: {
-            input?: any,
-            label?: any,
-            floatingLabel?: any,
-            underline?: any,
-            button?: any,
-            root?: any
-        },
-        multiline?: boolean,
-        value?: string,
-        label?: string,
-        type?: "date" | "password" | "text"
-        numberOfLines?: number,
-        options?: any[],
-        selected?: any,
-        onOptionSelect?: (option: any) => void,
-        date?: Date,
-        onDateSelect?: (date: Date) => void,
-        placeholder?: string,
-        onFocus?: () => void,
-        onChangeText?: (value: string) => void
-    }
+export class FloatingInput extends React.Component<{
+    inputProps?: TextInputProps,
+    styles?: {
+        closeButton?: any;
+        input?: any,
+        label?: any,
+        floatingLabel?: any,
+        underline?: any,
+        button?: any,
+        root?: any,
+        safeAreaView?: any,
+        header?: any,
+        confirmButton?: any,
+        cancelButton?: any,
+        confirmButtonText?: any,
+        cancelButtonText?: any
+    },
+    icon?: any,
+    multiple?: boolean,
+    multiline?: boolean,
+    selectionMode?: "ActionSheet" | "Modal"
+    value?: string,
+    label?: string,
+    type?: "date" | "password" | "text" | "time" | "datetime"
+    numberOfLines?: number,
+    disabled?: boolean,
+    options?: any[],
+    selected?: any,
+    onOptionSelect?: (option: any) => void,
+    datepickerProps?: DateTimePickerProps
+    onSubmitEditing?: () => void,
+    date?: Date,
+    onDateSelect?: (date: Date) => void,
+    placeholder?: string,
+    onFocus?: () => void,
+    onChangeText?: (value: string) => void
+}, any> {
 
     state: any = {
         labelTop: new Animated.Value(20),
         labelFontSize: new Animated.Value(16),
         focused: false,
-        selected: this.props.selected,
+        tmp_selected: this.props.selected || [],
         value: this.props.value
+    }
+
+    static defaultProps = {
+        selectionMode: "ActionSheet",
+        type: "text"
+    }
+
+
+    constructor(props) {
+        super(props);
+
+        if (this.props.options) {
+            if (this.props.multiple) {
+                this.state.selected = this.props.selected || []
+            } else if (this.props.selected !== undefined) {
+                this.state.selected = this.props.selected
+                const option = this.props.options.find(({value}) => value === this.state.selected);
+                if (option) this.state.value = option.label;
+            }
+        }
+
+        if (this.props.date && this.props.type === "date") {
+            this.state.value = this.props.date.toDateString()
+            this.state.date = this.props.date;
+        }
+    }
+
+    componentDidMount(): void {
+        this.refreshLabel()
+    }
+
+    componentDidUpdate(prevProps, prevState): void {
+
+        if (prevProps.value !== this.props.value && this.props.value !== undefined) {
+            this.setState({value: this.transformValueToString(this.props.value)})
+        }
+
+        if (this.props.date !== undefined && this.props.date !== prevProps.date) {
+            this.setState({date: this.props.date, value: this.transformValueToString(this.props.date)})
+        }
+
+        if (this.props.selected !== undefined && !_.isEqual(this.props.selected, prevProps.selected)) {
+            if (this.props.multiple) {
+                this.setState({
+                    selected: [...this.props.selected]
+                })
+            } else {
+                this.setState({
+                    selected: this.props.selected
+                })
+            }
+        }
+
+        if (!_.isEqual(this.state.selected, prevState.selected) || !_.isEqual(this.props.options, prevProps.options)) {
+            if (this.state.selected) {
+                if (!this.props.multiple) {
+                    const option = _.find(this.props.options, {value: this.state.selected})
+                    if (option)
+                        this.setState({value: option.label})
+                } else {
+                    this.setState({value: this.state.selected.map(value => this.props.options.find(({value: val}) => value === val)).filter(option => !!option).map(({label}) => label).join(", ")})
+                }
+            } else {
+                this.setState({value: null})
+            }
+        }
+
+        if (this.state.focused !== prevState.focused || this.state.value !== prevState.value) {
+            this.refreshLabel()
+        }
     }
 
     floatLabel() {
@@ -85,50 +197,72 @@ export class FloatingInput extends React.Component {
         }
     }
 
-    constructor(props) {
-        super(props);
-        if (this.props.selected && this.props.options) {
-            const option = this.props.options.find(({value}) => value === this.state.selected);
-            if (option) this.state.value = option.label;
+    transformValueToString(value) {
+        const {type} = this.props;
+        if (value && typeof value === "object") {
+            if (type === "date") {
+                value = value.toDateString()
+            } else if (type === "time") {
+                value = value.toTimeString()
+            } else if (type === "datetime") {
+                value = value.toLocaleDateString()
+            }
         }
+        return value;
+    }
 
-        if (this.props.date && this.props.type === "date") {
-            this.state.value = this.props.date.toDateString()
-            this.state.date = this.props.date;
+    isSelected(option) {
+        return this.state.tmp_selected.indexOf(option.value) !== -1
+    }
+
+    toggleSelected(option) {
+        const {multiple, onOptionSelect} = this.props;
+        if (multiple) {
+            updateState(this, state => {
+                if (this.isSelected(option)) {
+                    _.pull(state.tmp_selected, option.value)
+                } else {
+                    state.tmp_selected.push(option.value)
+                }
+                return state;
+            })
+        } else {
+            this.setState({
+                value: option.value ? option.label : null
+            })
+            this.unfocus()
+            onOptionSelect && onOptionSelect(option)
         }
     }
 
-
-    componentDidMount(): void {
-        this.refreshLabel()
+    selectOption(option) {
+        const {onOptionSelect} = this.props;
+        this.setState({selected: option.value})
+        this.unfocus()
+        onOptionSelect && onOptionSelect(option)
     }
 
-    componentDidUpdate(prevProps, prevState): void {
-        if (prevProps.value !== this.props.value && this.props.value !== undefined) {
-            this.setState({value: this.props.value})
-            this.refreshLabel()
-        }
+    selectedOptions() {
+        return this.state.tmp_selected.map(val => this.props.options.find(({value}) => value === val)).filter(value => !!value)
+    }
 
-        if (this.state.selected !== prevState.selected && this.props.options) {
-            this.setState({value: this.props.options.find(({value}) => value === this.state.selected)})
-        }
+    unfocus() {
+        this.setState({focused: false})
+    }
 
-        if (this.state.focused !== prevState.focused) {
-            this.refreshLabel()
-        }
-
-        if (this.props.onChangeText && this.state.value !== prevState.value) {
-            this.props.onChangeText(this.state.value)
-        }
-
-        if (this.props.date !== undefined && this.props.date !== prevProps.date) {
-            this.setState({value: this.props.date.toDateString()})
-        }
+    focus() {
+        const {onFocus} = this.props;
+        this.setState({focused: true})
+        onFocus && onFocus()
     }
 
     handleFocus() {
-        const {options, onOptionSelect, label} = this.props;
-        if (this.props.options) {
+        const {options, selectionMode, disabled, multiple, label} = this.props;
+
+        if (disabled)
+            return;
+
+        if (options && selectionMode === "ActionSheet" && !multiple) {
             ActionSheet.show({
                 options: [...options.map(({label}) => label), "Cancel"],
                 title: label,
@@ -137,19 +271,18 @@ export class FloatingInput extends React.Component {
             }, index => {
                 const option = options[index];
                 if (option) {
-                    this.setState({value: option.value ? option.label : null, focused: false})
-                    onOptionSelect && onOptionSelect(option)
+                    this.selectOption(option)
                 }
             })
         }
-        this.setState({focused: true})
+        this.focus()
     }
 
     render(): React.ReactNode {
-        const {styles, options, type, onFocus, onDateSelect, inputProps, numberOfLines, label, placeholder} = this.props;
-        let {value} = this.state;
-        const is_picker = type === "date" || !!options
-        return <View style={{flexDirection: "column", ...styles.root}}>
+        const {styles, options, disabled, datepickerProps, type, icon, onFocus, selectionMode, onDateSelect, onSubmitEditing, onChangeText, onOptionSelect, inputProps, numberOfLines, label, placeholder, multiple} = this.props;
+        let {value, focused} = this.state;
+        const is_picker = type === "date" || type === "time" || type === "datetime" || !!options
+        return <View style={styles.root}>
             <View style={{
                 position: "relative",
                 minHeight: 50,
@@ -181,37 +314,111 @@ export class FloatingInput extends React.Component {
                         :
                         <TextInput
                             placeholder={placeholder}
-                            value={value}
+                            value={value || value === 0 ? String(value) : ''}
+                            onSubmitEditing={onSubmitEditing}
                             secureTextEntry={type === "password"}
-                            onChangeText={value => this.setState({value})}
-                            onBlur={() => {
-                                this.setState({focused: false})
+                            onChangeText={value => {
+                                this.setState({value})
+                                onChangeText && onChangeText(value)
                             }}
-                            onFocus={() => {
-                                this.setState({focused: true})
-                                onFocus && onFocus()
-                            }}
+                            editable={!disabled}
+                            onBlur={() => this.unfocus()}
+                            onFocus={() => this.focus()}
                             style={styles.input}
                             {...inputProps}
                         />
                 }
                 {
-                    type === "date" && <DateTimePicker
+                    icon && <View style={{position: "absolute", right: 12, top: 12}}>
+                        {icon}
+                    </View>
+                }
+                {
+                    (type === "date" || type === "time" || type === "datetime") && <DateTimePicker
                         confirmTextIOS={"Confirm"}
                         isVisible={!!this.state.focused}
                         date={this.state.date || new Date()}
                         onConfirm={date => {
-                            this.setState({date, value: date.toDateString(), focused: false})
+                            this.unfocus()
+                            const value = this.transformValueToString(date)
+                            this.setState({date, value})
                             onDateSelect && onDateSelect(date)
                         }}
                         titleIOS={label}
                         onCancel={() => this.setState({focused: false})}
-                        mode={"date"}
+                        mode={type === "date" ? "date" : type === "datetime" ? "datetime" : "time"}
+                        {...datepickerProps}
                     />
                 }
             </View>
             <View style={styles.underline}/>
+            {
+                !!options && (selectionMode === "Modal" || multiple) &&
+                <Modal animated animationType="slide" onShow={() => {
+                    if (multiple) {
+                        this.setState({tmp_selected: [...this.state.selected]})
+                    }
+                }} visible={focused} onRequestClose={() => this.unfocus()}>
+                    <Header style={styles.header}>
+                        <Title style={{textAlign: "center", padding: 8}}>
+                            {label}
+                        </Title>
+                        <Icon
+                            onPress={() => this.unfocus()} style={{...styles.closeButton, position: "absolute"}}
+                            name="x" type="Feather"
+                        />
+                    </Header>
+                    <SafeAreaView style={styles.safeAreaView}>
+                        <View style={{flex: 1, backgroundColor: "white", padding: 8, paddingBottom: 20}}>
+                            <ScrollView style={{flex: 1, margin: -8}}>
+                                <List>
+                                    {
+                                        options.map(option =>
+                                            <ListItem
+                                                key={option.value}
+                                                onPress={() => this.toggleSelected(option)}
+                                            >
+                                                <Left>
+                                                    <Text>{option.label}</Text>
+                                                </Left>
+                                                {
+                                                    multiple &&
+                                                    <Right style={{marginRight: 15}}>
+                                                        <CheckBox
+                                                            onPress={() => this.toggleSelected(option)}
+                                                            checked={this.isSelected(option)}
+                                                            color="green"
+                                                        />
+                                                    </Right>
+                                                }
+                                            </ListItem>
+                                        )
+                                    }
+                                </List>
+                            </ScrollView>
+                            {
+                                multiple &&
+                                <View style={{flexDirection: "row"}}>
+                                    <View style={{padding: 8, flex: 1}}>
+                                        <Button
+                                            style={styles.confirmButton}
+                                            full
+                                            onPress={() => {
+                                                const options = this.selectedOptions()
+                                                this.setState({selected: options.map(({value}) => value)})
+                                                onOptionSelect && onOptionSelect(options)
+                                                this.unfocus()
+                                            }}
+                                        >
+                                            <Text style={styles.confirmButtonText}>Choose</Text>
+                                        </Button>
+                                    </View>
+                                </View>
+                            }
+                        </View>
+                    </SafeAreaView>
+                </Modal>
+            }
         </View>
     }
-
 }

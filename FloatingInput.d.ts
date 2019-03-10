@@ -1,37 +1,61 @@
 import * as React from "react";
 import { TextInputProps } from "react-native";
-export declare class FloatingInput extends React.Component {
-    props: {
-        inputProps?: TextInputProps;
-        styles?: {
-            input?: any;
-            label?: any;
-            floatingLabel?: any;
-            underline?: any;
-            button?: any;
-            root?: any;
-        };
-        multiline?: boolean;
-        value?: string;
-        label?: string;
-        type?: "date" | "password" | "text";
-        numberOfLines?: number;
-        options?: any[];
-        selected?: any;
-        onOptionSelect?: (option: any) => void;
-        date?: Date;
-        onDateSelect?: (date: Date) => void;
-        placeholder?: string;
-        onFocus?: () => void;
-        onChangeText?: (value: string) => void;
+import { DateTimePickerProps } from "react-native-modal-datetime-picker";
+export declare class FloatingInput extends React.Component<{
+    inputProps?: TextInputProps;
+    styles?: {
+        closeButton?: any;
+        input?: any;
+        label?: any;
+        floatingLabel?: any;
+        underline?: any;
+        button?: any;
+        root?: any;
+        safeAreaView?: any;
+        header?: any;
+        confirmButton?: any;
+        cancelButton?: any;
+        confirmButtonText?: any;
+        cancelButtonText?: any;
     };
+    icon?: any;
+    multiple?: boolean;
+    multiline?: boolean;
+    selectionMode?: "ActionSheet" | "Modal";
+    value?: string;
+    label?: string;
+    type?: "date" | "password" | "text" | "time" | "datetime";
+    numberOfLines?: number;
+    disabled?: boolean;
+    options?: any[];
+    selected?: any;
+    onOptionSelect?: (option: any) => void;
+    datepickerProps?: DateTimePickerProps;
+    onSubmitEditing?: () => void;
+    date?: Date;
+    onDateSelect?: (date: Date) => void;
+    placeholder?: string;
+    onFocus?: () => void;
+    onChangeText?: (value: string) => void;
+}, any> {
     state: any;
-    floatLabel(): void;
-    unFloatLabel(): void;
-    refreshLabel(): void;
+    static defaultProps: {
+        selectionMode: string;
+        type: string;
+    };
     constructor(props: any);
     componentDidMount(): void;
     componentDidUpdate(prevProps: any, prevState: any): void;
+    floatLabel(): void;
+    unFloatLabel(): void;
+    refreshLabel(): void;
+    transformValueToString(value: any): any;
+    isSelected(option: any): boolean;
+    toggleSelected(option: any): void;
+    selectOption(option: any): void;
+    selectedOptions(): any;
+    unfocus(): void;
+    focus(): void;
     handleFocus(): void;
     render(): React.ReactNode;
 }

@@ -1,10 +1,10 @@
 {
-  "name": "@technicalbros/react-native-styles",
+  "name": "@technicalbros/react-native-floating-inputs",
   "version": "1.0.0",
   "scripts": {
     "watch": "tsc --watch"
   },
-  "description": "JSS like styles for react native",
+  "description": "Floating Inputs for React Native Apps",
   "main": "index.js",
   "author": "Shridhar Sharma <shridharkaushik29@gmail.com>",
   "license": "MIT",
@@ -12,14 +12,21 @@
     "@types/lodash": "^4.14.121",
     "@types/react": "^16.8.5",
     "@types/react-native": "^0.57.38",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "react": "16.x",
+    "react-native": "0.x",
+    "lodash": "4.x",
+    "native-base": "2.x"
+  },
+  "peerDependencies": {
+    "react": "16.x.x",
+    "react-native": "0.x.x",
+    "lodash": "4.x.x",
+    "native-base": "2.x.x"
   },
   "dependencies": {
-    "react-native-modal-datetime-picker": "6.*",
-    "@technicalbros/react-native-styles": "1.*",
-    "native-base": "2.*",
-    "react": "16.*",
-    "lodash": "4.*",
-    "react-native": "0.*"
+    "react-native-modal-datetime-picker": "6.x.x",
+    "react-extended-component": "1.x.x",
+    "@technicalbros/react-native-styles": "1.x.x"
   }
 }
