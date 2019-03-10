@@ -262,7 +262,7 @@ var FloatingInput = /** @class */ (function (_super) {
             <react_native_1.TouchableOpacity onPress={function () {
                 _this.handleFocus();
             }}>
-                            <react_native_1.Text style={__assign({ paddingTop: 12, flexDirection: "column" }, styles.input, styles.button)}>{value}</react_native_1.Text>
+                            <react_native_1.Text numberOfLines={1} style={__assign({ paddingTop: 12, flexDirection: "column" }, styles.input, styles.button)}>{value}</react_native_1.Text>
                         </react_native_1.TouchableOpacity>
             :
                 <react_native_1.TextInput placeholder={placeholder} value={value || value === 0 ? String(value) : ''} onSubmitEditing={onSubmitEditing} secureTextEntry={type === "password"} onChangeText={function (value) {
@@ -376,4 +376,4 @@ var FloatingInput = /** @class */ (function (_super) {
     ], FloatingInput);
     return FloatingInput;
 }(React.Component));
-exports.FloatingInput = FloatingInput;
+exports.default = FloatingInput;

@@ -55,7 +55,7 @@ import material from "native-base/src/theme/variables/material";
         color: material.brandSecondaryContrast
     }
 })
-export class FloatingInput extends React.Component<{
+export default class FloatingInput extends React.Component<{
     inputProps?: TextInputProps,
     styles?: {
         closeButton?: any;
@@ -304,7 +304,7 @@ export class FloatingInput extends React.Component<{
                         <TouchableOpacity onPress={() => {
                             this.handleFocus()
                         }}>
-                            <Text style={{
+                            <Text numberOfLines={1} style={{
                                 paddingTop: 12,
                                 flexDirection: "column",
                                 ...styles.input,

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextInputProps } from "react-native";
 import { DateTimePickerProps } from "react-native-modal-datetime-picker";
-export declare class FloatingInput extends React.Component<{
+export default class FloatingInput extends React.Component<{
     inputProps?: TextInputProps;
     styles?: {
         closeButton?: any;
