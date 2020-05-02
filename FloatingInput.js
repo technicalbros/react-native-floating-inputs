@@ -58,7 +58,7 @@ var FloatingInput = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.state = {
             labelTop: new react_native_1.Animated.Value(20),
-            labelFontSize: new react_native_1.Animated.Value(16),
+            labelFontSize: new react_native_1.Animated.Value(_this.props.labelFontSize),
             focused: false,
             tmp_selected: _this.props.selected || [],
             value: _this.props.value
@@ -136,7 +136,7 @@ var FloatingInput = /** @class */ (function (_super) {
             toValue: 0
         }).start();
         react_native_1.Animated.spring(this.state.labelFontSize, {
-            toValue: 12
+            toValue: this.props.labelShrinkFontSize
         }).start();
     };
     FloatingInput.prototype.unFloatLabel = function () {
@@ -144,7 +144,7 @@ var FloatingInput = /** @class */ (function (_super) {
             toValue: 20
         }).start();
         react_native_1.Animated.spring(this.state.labelFontSize, {
-            toValue: 16
+            toValue: this.props.labelFontSize
         }).start();
     };
     FloatingInput.prototype.refreshLabel = function () {
@@ -288,9 +288,9 @@ var FloatingInput = /** @class */ (function (_super) {
             }} visible={focused} onRequestClose={function () { return _this.unfocus(); }}>
                     <native_base_1.Header androidStatusBarColor={styles.header.backgroundColor} style={styles.header}>
                         <native_base_1.Body>
-                        <native_base_1.Title>
-                            {label}
-                        </native_base_1.Title>
+                            <native_base_1.Title>
+                                {label}
+                            </native_base_1.Title>
                         </native_base_1.Body>
                         <native_base_1.Icon onPress={function () { return _this.unfocus(); }} style={__assign({}, styles.closeButton, { position: "absolute" })} name="x" type="Feather"/>
                     </native_base_1.Header>
@@ -334,7 +334,9 @@ var FloatingInput = /** @class */ (function (_super) {
     };
     FloatingInput.defaultProps = {
         selectionMode: "ActionSheet",
-        type: "text"
+        type: "text",
+        labelFontSize: 16,
+        labelShrinkFontSize: 12
     };
     FloatingInput = __decorate([
         withStyles_1.default({

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextInputProps } from "react-native";
 import { DateTimePickerProps } from "react-native-modal-datetime-picker";
-export default class FloatingInput extends React.Component<{
+export interface FloatingInputProps {
     inputProps?: TextInputProps;
     styles?: {
         closeButton?: any;
@@ -18,6 +18,8 @@ export default class FloatingInput extends React.Component<{
         confirmButtonText?: any;
         cancelButtonText?: any;
     };
+    labelFontSize?: number;
+    labelShrinkFontSize?: number;
     icon?: any;
     multiple?: boolean;
     multiline?: boolean;
@@ -37,12 +39,10 @@ export default class FloatingInput extends React.Component<{
     placeholder?: string;
     onFocus?: () => void;
     onChangeText?: (value: string) => void;
-}, any> {
+}
+export default class FloatingInput extends React.Component<FloatingInputProps, any> {
     state: any;
-    static defaultProps: {
-        selectionMode: string;
-        type: string;
-    };
+    static defaultProps: Partial<FloatingInputProps>;
     constructor(props: any);
     componentDidMount(): void;
     componentDidUpdate(prevProps: any, prevState: any): void;

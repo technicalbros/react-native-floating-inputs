@@ -17,6 +17,46 @@ import * as _ from "lodash";
 import withStyles from "@technicalbros/react-native-styles/withStyles";
 import material from "native-base/src/theme/variables/material";
 
+export interface FloatingInputProps {
+    inputProps?: TextInputProps,
+    styles?: {
+        closeButton?: any;
+        input?: any,
+        label?: any,
+        floatingLabel?: any,
+        underline?: any,
+        button?: any,
+        root?: any,
+        safeAreaView?: any,
+        header?: any,
+        confirmButton?: any,
+        cancelButton?: any,
+        confirmButtonText?: any,
+        cancelButtonText?: any
+    },
+    labelFontSize?: number,
+    labelShrinkFontSize?: number,
+    icon?: any,
+    multiple?: boolean,
+    multiline?: boolean,
+    selectionMode?: "ActionSheet" | "Modal"
+    value?: string,
+    label?: string,
+    type?: "date" | "password" | "text" | "time" | "datetime"
+    numberOfLines?: number,
+    disabled?: boolean,
+    options?: any[],
+    selected?: any,
+    onOptionSelect?: (option: any) => void,
+    datepickerProps?: DateTimePickerProps
+    onSubmitEditing?: () => void,
+    date?: Date,
+    onDateSelect?: (date: Date) => void,
+    placeholder?: string,
+    onFocus?: () => void,
+    onChangeText?: (value: string) => void
+}
+
 // @ts-ignore
 @withStyles({
     root: {
@@ -55,57 +95,22 @@ import material from "native-base/src/theme/variables/material";
         color: material.brandSecondaryContrast
     }
 })
-export default class FloatingInput extends React.Component<{
-    inputProps?: TextInputProps,
-    styles?: {
-        closeButton?: any;
-        input?: any,
-        label?: any,
-        floatingLabel?: any,
-        underline?: any,
-        button?: any,
-        root?: any,
-        safeAreaView?: any,
-        header?: any,
-        confirmButton?: any,
-        cancelButton?: any,
-        confirmButtonText?: any,
-        cancelButtonText?: any
-    },
-    icon?: any,
-    multiple?: boolean,
-    multiline?: boolean,
-    selectionMode?: "ActionSheet" | "Modal"
-    value?: string,
-    label?: string,
-    type?: "date" | "password" | "text" | "time" | "datetime"
-    numberOfLines?: number,
-    disabled?: boolean,
-    options?: any[],
-    selected?: any,
-    onOptionSelect?: (option: any) => void,
-    datepickerProps?: DateTimePickerProps
-    onSubmitEditing?: () => void,
-    date?: Date,
-    onDateSelect?: (date: Date) => void,
-    placeholder?: string,
-    onFocus?: () => void,
-    onChangeText?: (value: string) => void
-}, any> {
+export default class FloatingInput extends React.Component<FloatingInputProps, any> {
 
     state: any = {
         labelTop: new Animated.Value(20),
-        labelFontSize: new Animated.Value(16),
+        labelFontSize: new Animated.Value(this.props.labelFontSize),
         focused: false,
         tmp_selected: this.props.selected || [],
         value: this.props.value
     }
 
-    static defaultProps = {
+    static defaultProps: Partial<FloatingInputProps> = {
         selectionMode: "ActionSheet",
-        type: "text"
+        type: "text",
+        labelFontSize: 16,
+        labelShrinkFontSize: 12
     }
-
 
     constructor(props) {
         super(props);
@@ -176,7 +181,7 @@ export default class FloatingInput extends React.Component<{
             toValue: 0
         }).start()
         Animated.spring(this.state.labelFontSize, {
-            toValue: 12
+            toValue: this.props.labelShrinkFontSize
         }).start()
     }
 
@@ -185,7 +190,7 @@ export default class FloatingInput extends React.Component<{
             toValue: 20
         }).start()
         Animated.spring(this.state.labelFontSize, {
-            toValue: 16
+            toValue: this.props.labelFontSize
         }).start()
     }
 
@@ -361,9 +366,9 @@ export default class FloatingInput extends React.Component<{
                 }} visible={focused} onRequestClose={() => this.unfocus()}>
                     <Header androidStatusBarColor={styles.header.backgroundColor} style={styles.header}>
                         <Body>
-                        <Title>
-                            {label}
-                        </Title>
+                            <Title>
+                                {label}
+                            </Title>
                         </Body>
                         <Icon
                             onPress={() => this.unfocus()} style={{...styles.closeButton, position: "absolute"}}
