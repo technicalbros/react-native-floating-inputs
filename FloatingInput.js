@@ -217,34 +217,14 @@ var FloatingInput = /** @class */ (function (_super) {
         onFocus && onFocus();
     };
     FloatingInput.prototype.handleFocus = function () {
-        var _this = this;
-        var _a = this.props, options = _a.options, selectionMode = _a.selectionMode, disabled = _a.disabled, multiple = _a.multiple, label = _a.label;
+        var disabled = this.props.disabled;
         if (disabled)
             return;
-        if (options && selectionMode === "ActionSheet" && !multiple) {
-            native_base_1.ActionSheet.show({
-                options: options.map(function (_a) {
-                    var label = _a.label;
-                    return label;
-                }).concat(["Cancel"]),
-                title: label,
-                destructiveButtonIndex: options.indexOf(options.find(function (_a) {
-                    var value = _a.value;
-                    return !value;
-                })),
-                cancelButtonIndex: options.length
-            }, function (index) {
-                var option = options[index];
-                if (option) {
-                    _this.selectOption(option);
-                }
-            });
-        }
         this.focus();
     };
     FloatingInput.prototype.render = function () {
         var _this = this;
-        var _a = this.props, styles = _a.styles, options = _a.options, disabled = _a.disabled, datepickerProps = _a.datepickerProps, type = _a.type, icon = _a.icon, onFocus = _a.onFocus, selectionMode = _a.selectionMode, onDateSelect = _a.onDateSelect, onSubmitEditing = _a.onSubmitEditing, onChangeText = _a.onChangeText, onOptionSelect = _a.onOptionSelect, inputProps = _a.inputProps, numberOfLines = _a.numberOfLines, label = _a.label, placeholder = _a.placeholder, multiple = _a.multiple;
+        var _a = this.props, styles = _a.styles, options = _a.options, disabled = _a.disabled, datepickerProps = _a.datepickerProps, type = _a.type, icon = _a.icon, onDateSelect = _a.onDateSelect, onSubmitEditing = _a.onSubmitEditing, onChangeText = _a.onChangeText, onOptionSelect = _a.onOptionSelect, inputProps = _a.inputProps, label = _a.label, placeholder = _a.placeholder, multiple = _a.multiple;
         var _b = this.state, value = _b.value, focused = _b.focused;
         var is_picker = type === "date" || type === "time" || type === "datetime" || !!options;
         return <react_native_1.View style={styles.root}>
@@ -280,8 +260,8 @@ var FloatingInput = /** @class */ (function (_super) {
         }} titleIOS={label} onCancel={function () { return _this.setState({ focused: false }); }} mode={type === "date" ? "date" : type === "datetime" ? "datetime" : "time"} {...datepickerProps}/>}
             </react_native_1.View>
             <react_native_1.View style={styles.underline}/>
-            {!!options && (selectionMode === "Modal" || multiple) &&
-            <react_native_1.Modal animated animationType="slide" onShow={function () {
+            {!!options &&
+            <react_native_1.Modal supportedOrientations={["portrait", "landscape"]} animated animationType="slide" onShow={function () {
                 if (multiple) {
                     _this.setState({ tmp_selected: _this.state.selected.slice() });
                 }
@@ -333,7 +313,6 @@ var FloatingInput = /** @class */ (function (_super) {
         </react_native_1.View>;
     };
     FloatingInput.defaultProps = {
-        selectionMode: "ActionSheet",
         type: "text",
         labelFontSize: 16,
         labelShrinkFontSize: 12

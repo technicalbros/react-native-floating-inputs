@@ -38,8 +38,7 @@ export interface FloatingInputProps {
     labelShrinkFontSize?: number,
     icon?: any,
     multiple?: boolean,
-    multiline?: boolean,
-    selectionMode?: "ActionSheet" | "Modal"
+    multiline?: boolean
     value?: string,
     label?: string,
     type?: "date" | "password" | "text" | "time" | "datetime"
@@ -103,14 +102,13 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
         focused: false,
         tmp_selected: this.props.selected || [],
         value: this.props.value
-    }
+    };
 
     static defaultProps: Partial<FloatingInputProps> = {
-        selectionMode: "ActionSheet",
         type: "text",
         labelFontSize: 16,
         labelShrinkFontSize: 12
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -119,14 +117,14 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
             if (this.props.multiple) {
                 this.state.selected = this.props.selected || []
             } else if (this.props.selected !== undefined) {
-                this.state.selected = this.props.selected
+                this.state.selected = this.props.selected;
                 const option = this.props.options.find(({value}) => value === this.state.selected);
                 if (option) this.state.value = option.label;
             }
         }
 
         if (this.props.date && this.props.type === "date") {
-            this.state.value = this.props.date.toDateString()
+            this.state.value = this.props.date.toDateString();
             this.state.date = this.props.date;
         }
     }
@@ -160,7 +158,7 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
         if (!_.isEqual(this.state.selected, prevState.selected) || !_.isEqual(this.props.options, prevProps.options)) {
             if (this.state.selected) {
                 if (!this.props.multiple) {
-                    const option = _.find(this.props.options, {value: this.state.selected})
+                    const option = _.find(this.props.options, {value: this.state.selected});
                     if (option)
                         this.setState({value: option.label})
                 } else {
@@ -179,7 +177,7 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
     floatLabel() {
         Animated.spring(this.state.labelTop, {
             toValue: 0
-        }).start()
+        }).start();
         Animated.spring(this.state.labelFontSize, {
             toValue: this.props.labelShrinkFontSize
         }).start()
@@ -188,7 +186,7 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
     unFloatLabel() {
         Animated.spring(this.state.labelTop, {
             toValue: 20
-        }).start()
+        }).start();
         Animated.spring(this.state.labelFontSize, {
             toValue: this.props.labelFontSize
         }).start()
@@ -234,16 +232,16 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
         } else {
             this.setState({
                 value: option.value ? option.label : null
-            })
-            this.unfocus()
+            });
+            this.unfocus();
             onOptionSelect && onOptionSelect(option)
         }
     }
 
     selectOption(option) {
         const {onOptionSelect} = this.props;
-        this.setState({selected: option.value})
-        this.unfocus()
+        this.setState({selected: option.value});
+        this.unfocus();
         onOptionSelect && onOptionSelect(option)
     }
 
@@ -257,36 +255,23 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
 
     focus() {
         const {onFocus} = this.props;
-        this.setState({focused: true})
+        this.setState({focused: true});
         onFocus && onFocus()
     }
 
     handleFocus() {
-        const {options, selectionMode, disabled, multiple, label} = this.props;
+        const {disabled} = this.props;
 
         if (disabled)
             return;
 
-        if (options && selectionMode === "ActionSheet" && !multiple) {
-            ActionSheet.show({
-                options: [...options.map(({label}) => label), "Cancel"],
-                title: label,
-                destructiveButtonIndex: options.indexOf(options.find(({value}) => !value)),
-                cancelButtonIndex: options.length
-            }, index => {
-                const option = options[index];
-                if (option) {
-                    this.selectOption(option)
-                }
-            })
-        }
         this.focus()
     }
 
     render(): React.ReactNode {
-        const {styles, options, disabled, datepickerProps, type, icon, onFocus, selectionMode, onDateSelect, onSubmitEditing, onChangeText, onOptionSelect, inputProps, numberOfLines, label, placeholder, multiple} = this.props;
+        const {styles, options, disabled, datepickerProps, type, icon, onDateSelect, onSubmitEditing, onChangeText, onOptionSelect, inputProps, label, placeholder, multiple} = this.props;
         let {value, focused} = this.state;
-        const is_picker = type === "date" || type === "time" || type === "datetime" || !!options
+        const is_picker = type === "date" || type === "time" || type === "datetime" || !!options;
         return <View style={styles.root}>
             <View style={{
                 position: "relative",
@@ -323,7 +308,7 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
                             onSubmitEditing={onSubmitEditing}
                             secureTextEntry={type === "password"}
                             onChangeText={value => {
-                                this.setState({value})
+                                this.setState({value});
                                 onChangeText && onChangeText(value)
                             }}
                             editable={!disabled}
@@ -344,9 +329,9 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
                         isVisible={!!this.state.focused}
                         date={this.state.date || new Date()}
                         onConfirm={date => {
-                            this.unfocus()
-                            const value = this.transformValueToString(date)
-                            this.setState({date, value})
+                            this.unfocus();
+                            const value = this.transformValueToString(date);
+                            this.setState({date, value});
                             onDateSelect && onDateSelect(date)
                         }}
                         titleIOS={label}
@@ -358,8 +343,8 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
             </View>
             <View style={styles.underline}/>
             {
-                !!options && (selectionMode === "Modal" || multiple) &&
-                <Modal animated animationType="slide" onShow={() => {
+                !!options &&
+                <Modal supportedOrientations={["portrait", "landscape"]} animated animationType="slide" onShow={() => {
                     if (multiple) {
                         this.setState({tmp_selected: [...this.state.selected]})
                     }
@@ -411,9 +396,9 @@ export default class FloatingInput extends React.Component<FloatingInputProps, a
                                             style={styles.confirmButton}
                                             full
                                             onPress={() => {
-                                                const options = this.selectedOptions()
-                                                this.setState({selected: options.map(({value}) => value)})
-                                                onOptionSelect && onOptionSelect(options)
+                                                const options = this.selectedOptions();
+                                                this.setState({selected: options.map(({value}) => value)});
+                                                onOptionSelect && onOptionSelect(options);
                                                 this.unfocus()
                                             }}
                                         >

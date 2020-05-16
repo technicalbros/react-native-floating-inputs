@@ -3,3 +3,4 @@ src
 yarn.lock
 tsconfig.json
 .idea
+yarn-error.log

@@ -23,7 +23,6 @@ export interface FloatingInputProps {
     icon?: any;
     multiple?: boolean;
     multiline?: boolean;
-    selectionMode?: "ActionSheet" | "Modal";
     value?: string;
     label?: string;
     type?: "date" | "password" | "text" | "time" | "datetime";
